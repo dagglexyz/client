@@ -57,7 +57,6 @@ export const Datasets = () => {
 								</thead>
 								<tbody>
 									{datasets.map((d, i) => {
-										d = d.data;
 										return (
 											<tr key={i}>
 												<td
@@ -67,7 +66,7 @@ export const Datasets = () => {
 														display: "flex",
 													}}
 												>
-													{getShortAddress(d.id)}
+													{getShortAddress(d._id)}
 												</td>
 												<td>{d.name}</td>
 												<td>{d.description}</td>
@@ -79,7 +78,7 @@ export const Datasets = () => {
 												</td>
 												<td>{formatBytes(d.size)}</td>
 												{/* <td>09/04/2023 20:29</td> */}
-												<td>{new Date(d.timestamp).toDateString()}</td>
+												<td>{new Date(d.createdAt).toDateString()}</td>
 											</tr>
 										);
 									})}

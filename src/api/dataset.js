@@ -1,5 +1,5 @@
 import { default as axios } from "axios";
-import { SERVER_URL } from "../constants";
+import { SERVER_URL, SERVER_URL_X } from "../constants";
 import { resolve } from "../utils/resolver";
 
 export const uploadDataset = async function (
@@ -16,7 +16,7 @@ export const uploadDataset = async function (
 		form.append("name", name);
 		form.append("description", description);
 
-		const response = await axios.post(SERVER_URL + "/upload/dataset", form, {
+		const response = await axios.post(SERVER_URL_X + "/upload/dataset", form, {
 			headers: {
 				"Content-Type": `multipart/form-data`,
 				Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ export const getDatasets = async function () {
 	try {
 		let token = localStorage.getItem("token");
 
-		const response = await resolve(axios.get(SERVER_URL + "/datasets", {
+		const response = await resolve(axios.get(SERVER_URL_X + "/files?type=dataset", {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},

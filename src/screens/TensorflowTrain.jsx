@@ -131,9 +131,8 @@ export const TensorflowTrain = () => {
 									}}
 								>
 									{datasetOptions.map((o, i) => {
-										o = o.data;
 										return (
-											<option value={o.id + "--" + o.file} key={i}>
+											<option value={o._id + "--" + o.file} key={i}>
 												{o.name}
 											</option>
 										);

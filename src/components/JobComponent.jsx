@@ -20,8 +20,9 @@ export const JobComponent = ({ job: jb }) => {
 	async function gJ() {
 		if (refreshing) return;
 		setRefreshing(true);
-		const jobResolved = await getJob(job.id, job.type);
+		const jobResolved = await getJob(job._id);
 		if (jobResolved.statusCode === 200) {
+			console.log(job)
 			setJob(jobResolved.data);
 			toast("Successfully refreshed.", { type: "success" });
 		} else {
@@ -32,10 +33,10 @@ export const JobComponent = ({ job: jb }) => {
 	}
 
 	useEffect(() => {
-		if (!job || !job.id) {
+		if (jb) {
 			setJob(jb);
 		}
-	}, [job, jb]);
+	}, [jb]);
 
 	return !job ? (
 		<></>
@@ -46,7 +47,7 @@ export const JobComponent = ({ job: jb }) => {
 				onMouseEnter={toggleCopy}
 				onMouseLeave={toggleCopy}
 			>
-				{job.id}
+				{job.job_id}
 				<Tooltip
 					title="Copied!"
 					placement="top"
@@ -55,7 +56,7 @@ export const JobComponent = ({ job: jb }) => {
 				>
 					<Box
 						onClick={() => {
-							navigator.clipboard.writeText(job.id);
+							navigator.clipboard.writeText(job.job_id);
 							setOpen(true);
 						}}
 					>
@@ -100,7 +101,7 @@ export const JobComponent = ({ job: jb }) => {
 				{job.status === "Completed" ? "Check Result" : "-"}
 			</td>
 			{/* <td>09/04/2023 20:29</td> */}
-			<td>{new Date(job.timestamp).toDateString()}</td>
+			<td>{new Date(job.createdAt).toDateString()}</td>
 		</tr>
 	);
 };

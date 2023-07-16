@@ -53,7 +53,6 @@ export const Model = () => {
 								</thead>
 								<tbody>
 									{models.map((d, i) => {
-										d = d.data;
 										return (
 											<tr key={i}>
 												<td
@@ -63,7 +62,7 @@ export const Model = () => {
 														display: "flex",
 													}}
 												>
-													{getShortAddress(d.id)}
+													{getShortAddress(d._id)}
 												</td>
 												<td
 													onClick={() => {
@@ -77,7 +76,7 @@ export const Model = () => {
 													{getShortAddress(d.file)}
 												</td>
 												{/* <td>09/04/2023 20:29</td> */}
-												<td>{new Date(d.timestamp).toDateString()}</td>
+												<td>{new Date(d.createdAt).toDateString()}</td>
 											</tr>
 										);
 									})}

@@ -58,7 +58,7 @@ export const Job = () => {
 								</thead>
 								<tbody>
 									{jobs.map((j, i) => (
-										<JobComponent job={j.data} key={i} />
+										<JobComponent job={j} key={i} />
 									))}
 								</tbody>
 							</table>

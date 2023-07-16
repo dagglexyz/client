@@ -105,9 +105,7 @@ export function LeftDrawer({ smaller }) {
 	let credits = localStorage.getItem("credits");
 
 	async function gU() {
-		const address = localStorage.getItem("address");
-		if (!address || address === "") return;
-		const user = await getUser(address);
+		const user = await getUser();
 		setUser(user);
 		localStorage.setItem("credits", user.credits);
 	}

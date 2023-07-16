@@ -24,7 +24,7 @@
 		"web3": "^1.10.0"
 	},
 	"scripts": {
-		"start": "SET PORT=3001 && react-scripts start",
+		"start": "SET NODE_OPTIONS=--openssl-legacy-provider && SET PORT=3002 && react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject"
