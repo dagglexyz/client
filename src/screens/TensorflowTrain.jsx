@@ -48,7 +48,7 @@ export const TensorflowTrain = () => {
 		const resolved = await getDatasets();
 		if (resolved.statusCode === 200) {
 			setDatasetOptions(resolved.data);
-			if (resolved.data.length > 0) setFileUrl(resolved.data[0].data.file + "/");
+			if (resolved.data.length > 0) setFileUrl(resolved.data[0].file + "/");
 		}
 	}
 

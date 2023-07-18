@@ -5,7 +5,7 @@ import { uploadDataset } from "../api/dataset";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-export const Upload = ({ title, loggedInAddress }) => {
+export const Upload = () => {
 	const [uploadLoading, setUploadLoading] = useState(false);
 	const [file, setFile] = useState();
 	const [description, setDescription] = useState("");
@@ -13,8 +13,6 @@ export const Upload = ({ title, loggedInAddress }) => {
 	const navigate = useNavigate();
 
 	async function uploadFile() {
-		if (!loggedInAddress || loggedInAddress === "")
-			return toast("Please connect your wallet.", { type: "info" });
 		if (!file) return toast("Please select a file!", { type: "info" });
 		if (!name || name === "")
 			return toast("Please enter a name for this dataset.", { type: "info" });

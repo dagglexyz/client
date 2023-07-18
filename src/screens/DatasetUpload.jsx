@@ -5,7 +5,6 @@ import { Navbar } from "../components/Navbar";
 import { Upload } from "../components/Upload";
 
 export const DatasetUpload = () => {
-	const loggedInAddress = localStorage.getItem("address");
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -17,7 +16,6 @@ export const DatasetUpload = () => {
 					<br />
 					<Upload
 						title={"Upload your dataset.😃"}
-						loggedInAddress={loggedInAddress}
 					/>
 				</Box>
 			</Box>

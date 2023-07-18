@@ -41,6 +41,7 @@ export const Navbar = ({ disableSearch = false }) => {
 		const provider = new ethers.providers.JsonRpcProvider(
 			process.env.REACT_APP_QUICK_NODE
 		);
+		if (!username.includes("0x")) return;
 		const name = await provider.lookupAddress(username);
 		console.log({ ENSNAME: name });
 		if (!name) return;
@@ -54,8 +55,8 @@ export const Navbar = ({ disableSearch = false }) => {
 
 	useEffect(() => {
 		connectSite();
-		getEnsName();
 		if (username) {
+			getEnsName();
 			// 'your connected wallet address'
 			EmbedSDK.init({
 				headerText: "Notifications", // optional
