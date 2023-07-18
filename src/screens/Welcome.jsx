@@ -1,15 +1,20 @@
-import { Box } from "@mui/material";
-import React, { useEffect } from "react";
+import { Box, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import LoginImage from "../assets/loginpage.png";
 import BacalhauLogo from "../assets/bacalhaulogo.png";
 import { useNavigate } from "react-router-dom";
 import { connectWalletToSite, getWalletAddress } from "../utils/wallet";
-import { createUser } from "../api/user";
+import { createUser, loginUser, signUpUser } from "../api/user";
 import { BlueButton } from "../components/BlueButton";
 import { PrimaryGrey } from "../constants";
+import { toast } from "react-toastify";
 
 export const Welcome = () => {
 	const navigate = useNavigate();
+	const [isLogin, setIsLogin] = useState(true);
+	const [loading, setLoading] = useState(false);
+	const [username, setUsername] = useState();
+	const [password, setPassword] = useState();
 
 	async function connectSite() {
 		let token = localStorage.getItem("token");
@@ -28,6 +33,50 @@ export const Welcome = () => {
 				navigate("/home");
 			}
 		}
+	}
+
+	async function signup() {
+		if (!validate()) return;
+		setLoading(true);
+		await signUpUser(username, password);
+		let token = localStorage.getItem("token");
+		if (token && token !== "" && token !== "undefined") {
+			navigate("/home");
+		}
+		setLoading(false);
+	}
+
+	async function login() {
+		if (!validate()) return;
+		setLoading(true);
+		await loginUser(username, password);
+		let token = localStorage.getItem("token");
+		if (token && token !== "" && token !== "undefined") {
+			navigate("/home");
+		}
+		setLoading(false);
+	}
+
+	function validate() {
+		if (!password || !username) {
+			toast("Please fill all the fields.", {
+				type: "warning",
+			});
+			return false;
+		}
+		if (password.length < 6) {
+			toast("Password should be greater than 6 characters", {
+				type: "warning",
+			});
+			return false;
+		}
+		if (username.length < 6) {
+			toast("Username should be greater than 6 characters", {
+				type: "warning",
+			});
+			return false;
+		}
+		return true;
 	}
 
 	useEffect(() => {
@@ -67,11 +116,67 @@ export const Welcome = () => {
 					<br />
 					<h1>Log in to your account.</h1>
 					<p style={{ color: PrimaryGrey }}>
-						Hello power user, please connect your wallet.
+						Hello power user, please connect your wallet or signin.
 					</p>
 					<br />
 					<br />
 					<BlueButton title={"Connect your wallet"} onClick={connectSite} />
+					<Box
+						sx={{
+							mt: 2,
+						}}
+					>
+						(or)
+					</Box>
+					<Box>
+						<TextField
+							placeholder="Enter username"
+							size="small"
+							onChange={(e) => {
+								setUsername(e.target.value);
+							}}
+							sx={{
+								width: "100%",
+								mt: 2,
+							}}
+							InputProps={{
+								style: {
+									border: "1px solid white",
+								},
+							}}
+						/>
+						<TextField
+							placeholder="Enter password"
+							size="small"
+							type="password"
+							onChange={(e) => {
+								setPassword(e.target.value);
+							}}
+							sx={{
+								width: "100%",
+								mt: 1,
+							}}
+							InputProps={{
+								style: {
+									border: "1px solid white",
+								},
+							}}
+						/>
+						<br />
+						<br />
+						<Box
+							sx={{ color: "#4954FD", textAlign: "left", cursor: "pointer" }}
+							onClick={() => setIsLogin(!isLogin)}
+						>
+							{isLogin ? "Signup" : "Login"} instead?
+						</Box>
+						<br />
+						<BlueButton
+							title={isLogin ? "Login" : "Signup"}
+							onClick={isLogin ? login : signup}
+							loading={loading}
+						/>
+					</Box>
 				</Box>
 			</Box>
 			<Box

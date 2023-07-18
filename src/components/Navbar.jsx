@@ -147,7 +147,7 @@ export const Navbar = ({ disableSearch = false }) => {
 									onClick={handleClick}
 								></Box>
 								<Box sx={{ fontWeight: "bold", ml: "6px" }}>
-									{ensName !== "" ? ensName : getShortAddress(username)}
+									{ensName !== "" ? ensName : getShortAddress(username || "")}
 								</Box>
 							</Box>
 							<Menu
