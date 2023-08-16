@@ -1,4 +1,4 @@
-class StorageSpec {
+export class StorageSpec {
     storage_source;
     path;
     cid;
@@ -20,5 +20,3 @@ class StorageSpec {
         }
     }
 }
-
-module.exports = { StorageSpec }
