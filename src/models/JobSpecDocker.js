@@ -1,4 +1,4 @@
-class JobSpecDocker {
+export class JobSpecDocker {
     image;
     entrypoint;
     working_directory;
@@ -17,5 +17,3 @@ class JobSpecDocker {
         }
     }
 }
-
-module.exports = { JobSpecDocker }
