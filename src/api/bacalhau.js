@@ -153,7 +153,7 @@ export const uploadScript = async function (script) {
 
 		const resolved = await resolve(
 			axios.post(
-				SERVER_URL_X + "/upload/pythonscript",
+				SERVER_URL + "/bacalhau/pythonscript",
 				{ script },
 				{
 					headers: {
