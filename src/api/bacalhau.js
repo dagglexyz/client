@@ -224,17 +224,21 @@ export const runNodejsScript = async function (scriptUrl, filename) {
 			axios.post(
 				SERVER_URL_X + "/bacalhau/submit",
 				{
-					"jobspecdocker": new JobSpecDocker({
+					jobspecdocker: {
 						image: "node:alpine",
 						entrypoint: ["node", filename],
-						working_directory: "/inputs"
-					}),
-					"storagespec": [new StorageSpec({
-						storage_source: "IPFS",
-						path: "/inputs",
-						cid: scriptUrl.replace("https://", "").replace(".ipfs.sphn.link", "")
-					}).toJson()],
-					type: "script-nodejs"
+						working_directory: "/inputs",
+					},
+					storagespec: [
+						{
+							StorageSource: "IPFS",
+							path: "/inputs",
+							cid: scriptUrl
+								.replace("https://", "")
+								.replace(".ipfs.sphn.link", ""),
+						},
+					],
+					type: "script-nodejs",
 				},
 				{
 					headers: {

@@ -32,7 +32,7 @@ export const Navbar = ({ disableSearch = false }) => {
 		let token = localStorage.getItem("token");
 		if (!token || token === "" || token === "undefined") {
 			setConnectedToSite(false);
-			return navigate("/welcome");
+			return navigate("/");
 		}
 		setConnectedToSite(true);
 	}

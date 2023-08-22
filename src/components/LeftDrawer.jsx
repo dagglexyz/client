@@ -107,7 +107,7 @@ export function LeftDrawer({ smaller }) {
 	async function gU() {
 		const user = await getUser();
 		setUser(user);
-		localStorage.setItem("credits", user.credits);
+		localStorage.setItem("credits", user && user.credits ? user.credits : 0);
 	}
 
 	const handleCreditClose = () => {
