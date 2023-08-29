@@ -257,6 +257,39 @@ export const runNodejsScript = async function (scriptUrl, filename) {
 	}
 };
 
+
+
+export const runDocker = async function (jobspecdocker, inputs) {
+	try {
+		let token = localStorage.getItem("token");
+
+		const resolved = await resolve(
+			axios.post(
+				SERVER_URL_X + "/bacalhau/submit/docker",
+				{
+					jobspecdocker,
+					inputs,
+				},
+				{
+					headers: {
+						"Content-Type": `application/json`,
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			)
+		);
+		if (resolved.statusCode === 200) {
+			toast(
+				"Successfully created a job in Bacalhau, please check jobs for status🚀",
+				{ type: "success" }
+			);
+		}
+		return resolved;
+	} catch (error) {
+		console.log(error.message);
+	}
+};
+
 export const getJob = async function (id, type) {
 	try {
 		let token = localStorage.getItem("token");

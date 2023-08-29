@@ -8,11 +8,13 @@ import StableDiffusion from "../assets/stablediffusion.png";
 import FileUpload from "../assets/fileupload.png";
 import Dataset from "../assets/dataset.png";
 import Compass from "../assets/compass.png";
+import DockerLogo from "../assets/docker-logo.png";
 import { JobComponent } from "../components/JobComponent";
 import { useNavigate } from "react-router-dom";
 import { getJobs } from "../api/bacalhau";
 
 const actions = [
+	{ title: "Deploy Docker", image: DockerLogo, path: "/docker" },
 	{ title: "Upload File", image: FileUpload, path: "/fileupload" },
 	{ title: "Train Model", image: TensorflowImg, path: "/tensorflowtrain" },
 	{ title: "Upload Dataset", image: Dataset, path: "/datasetupload" },

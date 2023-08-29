@@ -8,10 +8,12 @@ import Nodejs from "../assets/nodejs-logo.png";
 import Python from "../assets/python-logo.png";
 import FileUpload from "../assets/fileupload.png";
 import Dataset from "../assets/dataset.png";
+import DockerLogo from "../assets/docker-logo.png";
 import RemoveBG from "../assets/removebg.png";
 import { useNavigate } from "react-router-dom";
 
 const actions = [
+	{ title: "Deploy Docker", image: DockerLogo, path: "/docker" },
 	{ title: "Upload File", image: FileUpload, path: "/fileupload" },
 	{ title: "Train Model", image: TensorflowImg, path: "/tensorflowtrain" },
 	{ title: "Upload Dataset", image: Dataset, path: "/datasetupload" },

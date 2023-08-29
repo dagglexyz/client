@@ -11,6 +11,7 @@ import { Python } from "./screens/Python";
 import { Nodejs } from "./screens/Nodejs";
 import { Welcome } from "./screens/Welcome";
 import { Removebg } from "./screens/Removebg";
+import { Docker } from "./screens/Docker";
 
 function App() {
 	return (
@@ -28,6 +29,7 @@ function App() {
 				<Route path="/nodejs" exact element={<Nodejs />} />
 				<Route path="/marketplace" exact element={<Marketplace />} />
 				<Route path="/tensorflowtrain" exact element={<TensorflowTrain />} />
+				<Route path="/docker" exact element={<Docker />} />
 			</Routes>
 		</Router>
 	);
