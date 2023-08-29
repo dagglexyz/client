@@ -119,10 +119,14 @@ export const Docker = () => {
 									<input
 										type="url"
 										id={`search-${i}`}
-										placeholder="URL"
+										placeholder="URL/CID"
 										value={inputs.current[i].cid}
 										onInput={(e) => {
-											inputs.current[i].cid = e.target.value;
+											if (inputs.current[i].StorageSource === "IPFS") {
+												inputs.current[i].cid = e.target.value;
+											} else {
+												inputs.current[i].url = e.target.value;
+											}
 											setInputList((_) => [...inputs.current]);
 										}}
 									/>
