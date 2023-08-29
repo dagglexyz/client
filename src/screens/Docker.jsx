@@ -11,6 +11,7 @@ import { runDocker } from "../api/bacalhau";
 import { toast } from "react-toastify";
 
 export const Docker = () => {
+	const [loading, setLoading] = useState(false);
 	const [image, setImage] = useState("");
 	const [workingdir, setWorkingdir] = useState("");
 	const inputs = useRef([]);
@@ -22,7 +23,8 @@ export const Docker = () => {
 	async function createDockerJob() {
 		if (!image)
 			return toast("Please specify the required fields", { type: "info" });
-		const resp = await runDocker(
+		setLoading(true);
+		await runDocker(
 			{
 				image,
 				WorkingDirectory: workingdir,
@@ -30,7 +32,7 @@ export const Docker = () => {
 			},
 			inputs.current
 		);
-		console.log(resp);
+		setLoading(false);
 	}
 
 	return (
@@ -222,7 +224,11 @@ export const Docker = () => {
 						</Box>
 					</Box>
 					<Box maxWidth="20vw">
-						<BlueButton title={"Submit"} onClick={createDockerJob} />
+						<BlueButton
+							title={"Submit"}
+							onClick={createDockerJob}
+							loading={loading}
+						/>
 					</Box>
 					<Info
 						title={"Run Docker images."}
