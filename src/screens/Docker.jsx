@@ -25,7 +25,7 @@ export const Docker = () => {
 		const resp = await runDocker(
 			{
 				image,
-				working_directory: workingdir,
+				WorkingDirectory: workingdir,
 				entrypoint: entrypoints.current,
 			},
 			inputs.current
