@@ -9,10 +9,12 @@ import {
 	AiFillDatabase,
 	AiFillFire,
 	AiFillHome,
+	AiFillShopping,
 	AiOutlineCompass,
 	AiOutlineDatabase,
 	AiOutlineFire,
 	AiOutlineHome,
+	AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { MdOutlineTask, MdTask } from "react-icons/md";
 import { PrimaryGrey } from "../constants";
@@ -31,7 +33,7 @@ const mainList = [
 		path: "/home",
 	},
 	{
-		text: "Jobs",
+		text: "Your Jobs",
 		i: () => <MdOutlineTask />,
 		ai: () => <MdTask />,
 		path: "/jobs",
@@ -50,9 +52,15 @@ const mainList = [
 	},
 	{
 		text: "Marketplace",
+		i: () => <AiOutlineShoppingCart />,
+		ai: () => <AiFillShopping />,
+		path: "/marketplace",
+	},
+	{
+		text: "Explorer",
 		i: () => <AiOutlineCompass />,
 		ai: () => <AiFillCompass />,
-		path: "/marketplace",
+		path: "/explorer",
 	},
 ];
 
@@ -126,6 +134,8 @@ export function LeftDrawer({ smaller }) {
 				return setIndex(3);
 			case "marketplace":
 				return setIndex(4);
+			case "explorer":
+				return setIndex(5);
 			default:
 				setIndex(0);
 		}

@@ -12,6 +12,7 @@ import { Nodejs } from "./screens/Nodejs";
 import { Welcome } from "./screens/Welcome";
 import { Removebg } from "./screens/Removebg";
 import { Docker } from "./screens/Docker";
+import { Explorer } from "./screens/Explorer";
 
 function App() {
 	return (
@@ -28,6 +29,7 @@ function App() {
 				<Route path="/python" exact element={<Python />} />
 				<Route path="/nodejs" exact element={<Nodejs />} />
 				<Route path="/marketplace" exact element={<Marketplace />} />
+				<Route path="/explorer" exact element={<Explorer />} />
 				<Route path="/tensorflowtrain" exact element={<TensorflowTrain />} />
 				<Route path="/docker" exact element={<Docker />} />
 			</Routes>

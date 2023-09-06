@@ -111,15 +111,30 @@ export const fileUpload = async function (url) {
 	}
 };
 
-export const getJobs = async function (query) {
+export const getJobs = async function (query, forExplorer) {
 	try {
-		let token = localStorage.getItem("token");
+		let token = forExplorer ? "" : localStorage.getItem("token");
 
 		const resolved = await resolve(
 			axios.get(SERVER_URL_X + `/jobs?query=${query ?? ""}`, {
 				headers: {
 					"Content-Type": `application/json`,
 					Authorization: `Bearer ${token}`,
+				},
+			})
+		);
+		return resolved;
+	} catch (error) {
+		console.log(error.message);
+	}
+};
+
+export const getJobEvents = async function (job_id) {
+	try {
+		const resolved = await resolve(
+			axios.get(SERVER_URL_X + `/jobs/events/${job_id}`, {
+				headers: {
+					"Content-Type": `application/json`,
 				},
 			})
 		);
