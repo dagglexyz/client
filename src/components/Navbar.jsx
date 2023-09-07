@@ -20,6 +20,7 @@ export const Navbar = ({ disableSearch = false }) => {
 	const [connectedToSite, setConnectedToSite] = useState(false);
 	const [ensName, setEnsName] = useState("");
 	const [ensAvatar, setEnsAvatar] = useState("");
+	const [input, setInput] = useState("");
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -99,7 +100,24 @@ export const Navbar = ({ disableSearch = false }) => {
 				>
 					{!disableSearch && (
 						<Box mr={2}>
-							<SearchComponent />
+							<SearchComponent
+								onSearch={() => {
+									console.log(input)
+									if (input !== "") {
+										navigate(`/jobs?query=${input}`);
+									}
+								}}
+								onChange={(e) => setInput(e.target.value)}
+								onEnter={(event) => {
+									const value = event.target.value;
+									if (event.key === "Enter") {
+										if (value === "") {
+											navigate(`/jobs`);
+										} else navigate(`/jobs?query=${value}`);
+									}
+								}}
+								title="Search jobs by id..."
+							/>
 						</Box>
 					)}
 				</div>

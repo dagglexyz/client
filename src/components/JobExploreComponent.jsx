@@ -136,17 +136,16 @@ export const JobExploreComponent = ({ job: jb }) => {
 					>
 						<Box
 							sx={{
-								flex: 4,
+								flexGrow: 1,
 							}}
 						>
 							{j.event_name}
 						</Box>
 						<Box
 							sx={{
-								flex: 1,
 							}}
 						>
-							{new Date(j.createdAt).toDateString()}
+							{new Date(j.createdAt).toLocaleTimeString()}
 						</Box>
 						<Box style={{ cursor: "pointer" }}>
 							<AiOutlineDown color={"transparent"} onClick={gJE} />

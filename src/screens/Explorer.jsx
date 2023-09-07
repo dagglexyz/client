@@ -5,12 +5,14 @@ import { Navbar } from "../components/Navbar";
 import { getJobs } from "../api/bacalhau";
 import { useLocation } from "react-router-dom";
 import { JobExploreComponent } from "../components/JobExploreComponent";
+import { SearchComponent } from "../components/search/SearchComponent";
 
 export const Explorer = () => {
 	const [jobs, setJobs] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const search = useLocation().search;
 	const query = new URLSearchParams(search).get("query");
+	const [input, setInput] = useState("");
 
 	async function gJ(query) {
 		setLoading(true);
@@ -32,6 +34,24 @@ export const Explorer = () => {
 				<Navbar />
 				<Box sx={{ p: 2 }}>
 					<h2>Explorer 🧭</h2>
+					<br />
+					<Box sx={{ width: "fit-content" }}>
+						<SearchComponent
+							title="Search by job/client ID"
+							onChange={(e) => setInput(e.target.value)}
+							onSearch={() => {
+								if (input !== "") {
+									gJ(input);
+								}
+							}}
+							onEnter={(event) => {
+								const value = event.target.value;
+								if (event.key === "Enter") {
+									if (value !== "") gJ(value);
+								}
+							}}
+						/>
+					</Box>
 					<br />
 					{loading ? (
 						<Box>
