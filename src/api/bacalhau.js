@@ -242,7 +242,7 @@ export const runNodejsScript = async function (scriptUrl, filename) {
 					jobspecdocker: {
 						image: "node:alpine",
 						entrypoint: ["node", filename],
-						working_directory: "/inputs",
+						WorkingDirectory: "/inputs",
 					},
 					storagespec: [
 						{
