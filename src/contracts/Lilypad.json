@@ -1,0 +1,135 @@
+{
+	"abi": [
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "bridgeContract",
+					"type": "address"
+				}
+			],
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "uint256",
+					"name": "jobId",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "result",
+					"type": "string"
+				}
+			],
+			"name": "JobCanceled",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": true,
+					"internalType": "uint256",
+					"name": "jobId",
+					"type": "uint256"
+				},
+				{
+					"indexed": false,
+					"internalType": "address",
+					"name": "from",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"internalType": "enum LilypadResultType",
+					"name": "resultType",
+					"type": "uint8"
+				},
+				{
+					"indexed": false,
+					"internalType": "string",
+					"name": "result",
+					"type": "string"
+				}
+			],
+			"name": "JobCompleted",
+			"type": "event"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_jobId",
+					"type": "uint256"
+				},
+				{
+					"internalType": "string",
+					"name": "_errorMsg",
+					"type": "string"
+				}
+			],
+			"name": "lilypadCancelled",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "address",
+					"name": "_from",
+					"type": "address"
+				},
+				{
+					"internalType": "uint256",
+					"name": "_jobId",
+					"type": "uint256"
+				},
+				{
+					"internalType": "enum LilypadResultType",
+					"name": "_resultType",
+					"type": "uint8"
+				},
+				{
+					"internalType": "string",
+					"name": "_result",
+					"type": "string"
+				}
+			],
+			"name": "lilypadFulfilled",
+			"outputs": [],
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"internalType": "string",
+					"name": "_spec",
+					"type": "string"
+				}
+			],
+			"name": "runJob",
+			"outputs": [],
+			"stateMutability": "payable",
+			"type": "function"
+		}
+	]
+}
