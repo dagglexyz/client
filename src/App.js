@@ -13,6 +13,7 @@ import { Welcome } from "./screens/Welcome";
 import { Removebg } from "./screens/Removebg";
 import { Docker } from "./screens/Docker";
 import { Explorer } from "./screens/Explorer";
+import { Lilypad } from "./screens/Lilypad";
 
 function App() {
 	return (
@@ -32,6 +33,7 @@ function App() {
 				<Route path="/explorer" exact element={<Explorer />} />
 				<Route path="/tensorflowtrain" exact element={<TensorflowTrain />} />
 				<Route path="/docker" exact element={<Docker />} />
+				<Route path="/lilypad" exact element={<Lilypad />} />
 			</Routes>
 		</Router>
 	);

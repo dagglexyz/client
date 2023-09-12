@@ -23,10 +23,11 @@ contract Lilypad is LilypadCallerInterface {
         bridge = LilypadEventsUpgradeable(bridgeContract);
     }
 
-    function runJob(string memory _spec) external payable  {
+    function runJob(string memory _spec) external payable returns(uint256) {
         uint256 lilypadFee = bridge.getLilypadFee();
 
-        bridge.runLilypadJob{value: lilypadFee}(address(this), _spec, uint8(LilypadResultType.CID));
+        uint256 jobId = bridge.runLilypadJob{value: lilypadFee}(address(this), _spec, uint8(LilypadResultType.CID));
+        return jobId;
     }
 
     function getLilypadFee() private view returns (uint256) {

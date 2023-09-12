@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { LeftDrawer } from "../components/LeftDrawer";
 import { Navbar } from "../components/Navbar";
 import TensorflowImg from "../assets/tensorflow.png";
-import StableDiffusion from "../assets/stablediffusion.png";
+import Lilypad from "../assets/lilypad.png";
 import FileUpload from "../assets/fileupload.png";
 import Dataset from "../assets/dataset.png";
 import Compass from "../assets/compass.png";
@@ -18,7 +18,7 @@ const actions = [
 	{ title: "Upload File", image: FileUpload, path: "/fileupload" },
 	{ title: "Train Model", image: TensorflowImg, path: "/tensorflowtrain" },
 	{ title: "Upload Dataset", image: Dataset, path: "/datasetupload" },
-	{ title: "Stable Diffusion", image: StableDiffusion },
+	{ title: "Lilypad Dashboard", image: Lilypad, path: "/lilypad" },
 	{ title: "Explore Actions", image: Compass, path: "/marketplace" },
 ];
 export const Home = () => {
