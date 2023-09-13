@@ -38,6 +38,16 @@ export const Lilypad = () => {
 	const navigate = useNavigate();
 
 	async function gJ() {
+		setTemplate((prevState) => ({
+			...prevState,
+			inputs: prevState.inputs.concat([
+				{ StorageSource: "IPFS", key: Date.now() },
+			]),
+			docker: {
+				...prevState.docker,
+				entrypoint: prevState.docker.entrypoint.concat([""]),
+			},
+		}));
 		const resp = await getLilypadJobs();
 		setLilyPadJobs(resp);
 	}
@@ -49,14 +59,16 @@ export const Lilypad = () => {
 
 	const data = new Spec({
 		docker: new JobSpecDocker({
-			entrypoint: template.docker.entrypoint,
+			entrypoint: template.docker.entrypoint.filter((e) => e),
 			image: template.docker.image,
 			WorkingDirectory: template.docker.WorkingDirectory,
 		}),
 		publisher_spec: new PublisherSpec({ type: "Estuary" }),
 		timeout: 1800,
 		verifier: "Noop",
-		inputs: template.inputs.map((s) => new StorageSpec(s)),
+		inputs: template.inputs
+			.filter((t) => t.cid || t.url)
+			.map((s) => new StorageSpec(s)),
 	});
 
 	async function createJob() {
@@ -247,7 +259,7 @@ export const Lilypad = () => {
 											<input
 												type="url"
 												placeholder="URL/CID"
-												value={inp.cid}
+												value={inp.StorageSource === "IPFS" ? inp.cid : inp.url}
 												onInput={(e) => {
 													setTemplate((prevState) => {
 														if (prevState.inputs[iI].StorageSource === "IPFS") {
@@ -422,18 +434,24 @@ export const Lilypad = () => {
 												</IconButton>
 											}
 											key={i}
-											onClick={() => {
-												setTemplate((_) => {
-													return { ...m.payload.Spec };
-												});
-											}}
 										>
-											<ListItemAvatar>
+											<ListItemAvatar
+												onClick={() => {
+													setTemplate((_) => {
+														return { ...m.payload.Spec };
+													});
+												}}
+											>
 												<Avatar>
 													<AiFillFolder />
 												</Avatar>
 											</ListItemAvatar>
 											<ListItemText
+												onClick={() => {
+													setTemplate((_) => {
+														return { ...m.payload.Spec };
+													});
+												}}
 												primary={m.name}
 												secondary={`${new Date(
 													m.createdAt
