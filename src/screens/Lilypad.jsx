@@ -8,7 +8,7 @@ import {
 	ListItemText,
 	Skeleton,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LeftDrawer } from "../components/LeftDrawer";
 import { Navbar } from "../components/Navbar";
 import { MdAddCircleOutline } from "react-icons/md";
@@ -21,39 +21,42 @@ import { getWalletAddress } from "../utils/wallet";
 import { createLilypadJob, getLilypadJobs } from "../api/lilypad";
 import { AiFillDelete, AiFillFolder } from "react-icons/ai";
 import { LilyJobComponent } from "../components/LilyJobComponent";
+import { createTemplate, deleteTemplate, getTemplates } from "../api/template";
 const {
 	Spec,
 	JobSpecDocker,
 	PublisherSpec,
+	Payload,
+	StorageSpec,
 } = require("@daggle/bacalhau-js/models");
 
 export const Lilypad = () => {
 	const [loading, setLoading] = useState(false);
-	const [image, setImage] = useState("");
-	const [workingdir, setWorkingdir] = useState("");
-	const inputs = useRef([]);
-	const [inputList, setInputList] = useState([]);
 	const [modules, setModules] = useState([]);
+	const [template, setTemplate] = useState(new Spec().toJson);
 	const [lilyPadJobs, setLilyPadJobs] = useState([]);
 	const navigate = useNavigate();
 
-	const entrypoints = useRef([]);
-	const [entrypointsList, setEntrypointsList] = useState([]);
+	async function gJ() {
+		const resp = await getLilypadJobs();
+		setLilyPadJobs(resp);
+	}
 
 	async function gM() {
-		const resp = await getLilypadJobs();
+		const resp = await getTemplates();
 		setModules(resp);
-		setLilyPadJobs(resp);
 	}
 
 	const data = new Spec({
 		docker: new JobSpecDocker({
-			entrypoint: entrypoints.current,
-			image: image,
+			entrypoint: template.docker.entrypoint,
+			image: template.docker.image,
+			WorkingDirectory: template.docker.WorkingDirectory,
 		}),
 		publisher_spec: new PublisherSpec({ type: "Estuary" }),
 		timeout: 1800,
 		verifier: "Noop",
+		inputs: template.inputs.map((s) => new StorageSpec(s)),
 	});
 
 	async function createJob() {
@@ -92,8 +95,21 @@ export const Lilypad = () => {
 		setLoading(false);
 	}
 
+	async function sM() {
+		const name = prompt("Enter module name");
+		if (!name || name === "") return;
+		let payload = new Payload({ spec: data });
+		payload = payload.toJson;
+		await createTemplate({
+			payload,
+			name,
+		});
+		gM();
+	}
+
 	useEffect(() => {
 		gM();
+		gJ();
 	}, []);
 
 	return (
@@ -134,8 +150,18 @@ export const Lilypad = () => {
 												type="url"
 												id="search"
 												placeholder="leostelon/dedocker"
-												value={image}
-												onChange={(e) => setImage(e.target.value)}
+												value={
+													template?.docker?.image ? template.docker.image : ""
+												}
+												onChange={(e) =>
+													setTemplate((prevState) => ({
+														...prevState,
+														docker: {
+															...prevState.docker,
+															image: e.target.value,
+														},
+													}))
+												}
 											/>
 										</Box>
 									</Box>
@@ -151,8 +177,20 @@ export const Lilypad = () => {
 												type="url"
 												id="workingdir"
 												placeholder="/inputs"
-												value={workingdir}
-												onChange={(e) => setWorkingdir(e.target.value)}
+												value={
+													template?.docker?.WorkingDirectory
+														? template.docker.WorkingDirectory
+														: ""
+												}
+												onChange={(e) => {
+													setTemplate((prevState) => ({
+														...prevState,
+														docker: {
+															...prevState.docker,
+															WorkingDirectory: e.target.value,
+														},
+													}));
+												}}
 											/>
 										</Box>
 									</Box>
@@ -168,30 +206,37 @@ export const Lilypad = () => {
 									<MdAddCircleOutline
 										style={{ cursor: "pointer" }}
 										onClick={() => {
-											inputs.current.push({ StorageSource: "IPFS" });
-											setInputList((_) => [...inputs.current]);
+											setTemplate((prevState) => ({
+												...prevState,
+												inputs: prevState.inputs.concat([
+													{ StorageSource: "IPFS", key: Date.now() },
+												]),
+											}));
 										}}
 									/>
 								</Box>
-								{inputList.map((d, i) => (
+								{template.inputs.map((inp, iI) => (
 									<Box
 										maxWidth="30vw"
 										sx={{
 											display: "flex",
 											alignItems: "center",
 										}}
-										key={i}
+										key={inp.key}
 										mb={1}
 									>
 										<Box mr={2}>
 											<select
 												name="storage-spec"
 												className="storage-select search-container"
-												defaultValue="IPFS"
-												value={inputs.current[i].StorageSource}
+												value={inp.StorageSource}
 												onChange={(e) => {
-													inputs.current[i].StorageSource = e.target.value;
-													setInputList((_) => [...inputs.current]);
+													setTemplate((prevState) => {
+														prevState.inputs[iI].StorageSource = e.target.value;
+														return {
+															...prevState,
+														};
+													});
 												}}
 											>
 												<option value="IPFS">IPFS</option>
@@ -201,28 +246,34 @@ export const Lilypad = () => {
 										<Box className="param search-container" mr={2}>
 											<input
 												type="url"
-												id={`search-${i}`}
 												placeholder="URL/CID"
-												value={inputs.current[i].cid}
+												value={inp.cid}
 												onInput={(e) => {
-													if (inputs.current[i].StorageSource === "IPFS") {
-														inputs.current[i].cid = e.target.value;
-													} else {
-														inputs.current[i].url = e.target.value;
-													}
-													setInputList((_) => [...inputs.current]);
+													setTemplate((prevState) => {
+														if (prevState.inputs[iI].StorageSource === "IPFS") {
+															prevState.inputs[iI].cid = e.target.value;
+														} else {
+															prevState.inputs[iI].url = e.target.value;
+														}
+														return {
+															...prevState,
+														};
+													});
 												}}
 											/>
 										</Box>
 										<Box className="param search-container" mr={2}>
 											<input
 												type="text"
-												id={`input-${i}`}
 												placeholder="Save to directory"
-												value={inputs.current[i].path}
+												value={inp.path}
 												onInput={(e) => {
-													inputs.current[i].path = e.target.value;
-													setInputList((_) => [...inputs.current]);
+													setTemplate((prevState) => {
+														prevState.inputs[iI].path = e.target.value;
+														return {
+															...prevState,
+														};
+													});
 												}}
 											/>
 										</Box>
@@ -230,8 +281,14 @@ export const Lilypad = () => {
 											<AiOutlineCloseCircle
 												style={{ cursor: "pointer" }}
 												onClick={() => {
-													inputs.current.splice(i, 1);
-													setInputList((_) => [...inputs.current]);
+													let oldInputs = [...template.inputs];
+													oldInputs.splice(iI, 1);
+													setTemplate((prevState) => {
+														return {
+															...prevState,
+															inputs: [...oldInputs],
+														};
+													});
 												}}
 											/>
 										</Box>
@@ -248,12 +305,17 @@ export const Lilypad = () => {
 									<MdAddCircleOutline
 										style={{ cursor: "pointer" }}
 										onClick={() => {
-											entrypoints.current.push("");
-											setEntrypointsList((_) => [...entrypoints.current]);
+											setTemplate((prevState) => ({
+												...prevState,
+												docker: {
+													...prevState.docker,
+													entrypoint: prevState.docker.entrypoint.concat([""]),
+												},
+											}));
 										}}
 									/>
 								</Box>
-								{entrypointsList.map((d, i) => (
+								{template.docker.entrypoint.map((d, i) => (
 									<Box
 										maxWidth="30vw"
 										sx={{
@@ -268,10 +330,17 @@ export const Lilypad = () => {
 												type="text"
 												id={`entrypoint-${i}`}
 												placeholder="Command"
-												value={entrypoints.current[i]}
+												value={d}
 												onInput={(e) => {
-													entrypoints.current[i] = e.target.value;
-													setEntrypointsList((_) => [...entrypoints.current]);
+													let en = [...template.docker.entrypoint];
+													en[i] = e.target.value;
+													setTemplate((prevState) => ({
+														...prevState,
+														docker: {
+															...prevState.docker,
+															entrypoint: en,
+														},
+													}));
 												}}
 											/>
 										</Box>
@@ -279,8 +348,17 @@ export const Lilypad = () => {
 											<AiOutlineCloseCircle
 												style={{ cursor: "pointer" }}
 												onClick={() => {
-													entrypoints.current.splice(i, 1);
-													setEntrypointsList((_) => [...entrypoints.current]);
+													let oE = [...template.docker.entrypoint];
+													oE.splice(i, 1);
+													setTemplate((prevState) => {
+														return {
+															...prevState,
+															docker: {
+																...prevState.docker,
+																entrypoint: oE,
+															},
+														};
+													});
 												}}
 											/>
 										</Box>
@@ -304,12 +382,21 @@ export const Lilypad = () => {
 									</Box>
 								</Box>
 							</Box>
-							<Box maxWidth="20vw">
-								<BlueButton
-									title={"Submit"}
-									onClick={createJob}
-									loading={loading}
-								/>
+							<Box sx={{ display: "flex", justifyContent: "space-around" }}>
+								<Box width={"100%"} mr={1}>
+									<BlueButton
+										title={"Save Module"}
+										onClick={sM}
+										loading={loading}
+									/>
+								</Box>
+								<Box width={"100%"} ml={1}>
+									<BlueButton
+										title={"Submit Job"}
+										onClick={createJob}
+										loading={loading}
+									/>
+								</Box>
 							</Box>
 						</Box>
 						<Box sx={{ p: 2, flex: 1 }} width={"100%"}>
@@ -323,11 +410,23 @@ export const Lilypad = () => {
 									return (
 										<ListItem
 											secondaryAction={
-												<IconButton edge="end" aria-label="delete">
+												<IconButton
+													edge="end"
+													aria-label="delete"
+													onClick={async () => {
+														await deleteTemplate(m._id);
+														gM();
+													}}
+												>
 													<AiFillDelete />
 												</IconButton>
 											}
 											key={i}
+											onClick={() => {
+												setTemplate((_) => {
+													return { ...m.payload.Spec };
+												});
+											}}
 										>
 											<ListItemAvatar>
 												<Avatar>
@@ -335,8 +434,12 @@ export const Lilypad = () => {
 												</Avatar>
 											</ListItemAvatar>
 											<ListItemText
-												primary={"Module Name"}
-												secondary={"09/04/2023 20:29"}
+												primary={m.name}
+												secondary={`${new Date(
+													m.createdAt
+												).toLocaleDateString()} ${new Date(
+													m.createdAt
+												).toLocaleTimeString()}`}
 											/>
 										</ListItem>
 									);
