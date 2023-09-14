@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { ChainsConfig } from "../constants";
+import { CHAIN } from "../constants";
 
 export async function connectWalletToSite() {
 	try {
@@ -25,8 +25,8 @@ export async function connectWalletToSite() {
 }
 
 export async function switchChain() {
-	const config = { ...ChainsConfig["FVM_CALIBERATION"] };
-	config.chainId = Web3.utils.toHex(ChainsConfig["FVM_CALIBERATION"].chainId);
+	const config = { ...CHAIN };
+	config.chainId = Web3.utils.toHex(CHAIN.chainId);
 
 	try {
 		await window.ethereum.request({

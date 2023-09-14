@@ -14,11 +14,11 @@ import { useNavigate } from "react-router-dom";
 import { getJobs } from "../api/bacalhau";
 
 const actions = [
+	{ title: "Lilypad Dashboard", image: Lilypad, path: "/lilypad" },
 	{ title: "Deploy Docker", image: DockerLogo, path: "/docker" },
 	{ title: "Upload File", image: FileUpload, path: "/fileupload" },
 	{ title: "Train Model", image: TensorflowImg, path: "/tensorflowtrain" },
 	{ title: "Upload Dataset", image: Dataset, path: "/datasetupload" },
-	{ title: "Lilypad Dashboard", image: Lilypad, path: "/lilypad" },
 	{ title: "Explore Actions", image: Compass, path: "/marketplace" },
 ];
 export const Home = () => {

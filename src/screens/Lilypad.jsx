@@ -17,11 +17,12 @@ import { BlueButton } from "../components/BlueButton";
 import { useNavigate } from "react-router-dom";
 import Web3 from "web3";
 import LilypadInterface from "../contracts/Lilypad.json";
-import { getWalletAddress } from "../utils/wallet";
+import { getWalletAddress, switchChain } from "../utils/wallet";
 import { createLilypadJob, getLilypadJobs } from "../api/lilypad";
 import { AiFillDelete, AiFillFolder } from "react-icons/ai";
 import { LilyJobComponent } from "../components/LilyJobComponent";
 import { createTemplate, deleteTemplate, getTemplates } from "../api/template";
+import { CHAIN } from "../constants";
 const {
 	Spec,
 	JobSpecDocker,
@@ -32,28 +33,49 @@ const {
 
 export const Lilypad = () => {
 	const [loading, setLoading] = useState(false);
+	const [jobLoading, setJobLoading] = useState(false);
+	const [moduleLoading, setModuleLoading] = useState(false);
 	const [modules, setModules] = useState([]);
 	const [template, setTemplate] = useState(new Spec().toJson);
 	const [lilyPadJobs, setLilyPadJobs] = useState([]);
 	const navigate = useNavigate();
 
 	async function gJ() {
-		setTemplate((prevState) => ({
-			...prevState,
-			inputs: prevState.inputs.concat([
-				{ StorageSource: "IPFS", key: Date.now() },
-			]),
-			docker: {
-				...prevState.docker,
-				entrypoint: prevState.docker.entrypoint.concat([""]),
-			},
-		}));
+		if (!template.docker.image) {
+			setTemplate((prevState) => ({
+				...prevState,
+				inputs: prevState.inputs.concat([
+					{ StorageSource: "IPFS", key: Date.now() },
+				]),
+				docker: {
+					...prevState.docker,
+					entrypoint: prevState.docker.entrypoint.concat([""]),
+				},
+			}));
+		}
+		setJobLoading(true);
 		const resp = await getLilypadJobs();
 		setLilyPadJobs(resp);
+		setJobLoading(false);
 	}
 
 	async function gM() {
 		const resp = await getTemplates();
+		if (resp.length === 0) {
+			resp.push({
+				_id: 0,
+				name: "Cowsay Sample Module🐮",
+				payload: new Payload({
+					spec: new Spec({
+						docker: new JobSpecDocker({
+							image: "grycap/cowsay:latest",
+							entrypoint: ["/usr/games/cowsay", "Welcome to Daggle🥳"],
+						}),
+					}),
+				}).toJson,
+				createdAt: new Date(),
+			});
+		}
 		setModules(resp);
 	}
 
@@ -72,14 +94,15 @@ export const Lilypad = () => {
 	});
 
 	async function createJob() {
+		await switchChain();
 		setLoading(true);
-		const FEE = Web3.utils.toWei("0.03");
+		const FEE = Web3.utils.toWei("0.04");
 		let spec = JSON.stringify(data.toJson);
 
 		const web3 = new Web3(window.ethereum);
 		const contract = new web3.eth.Contract(
 			LilypadInterface.abi,
-			"0xdD6a7F72d68fbe6F347ff4c20EC0fa7eC9abB40B"
+			CHAIN.contract_address
 		);
 
 		const currentAddress = await getWalletAddress();
@@ -95,13 +118,12 @@ export const Lilypad = () => {
 			.runJob(spec)
 			.send({ from: currentAddress, gasPrice, gas, value: FEE })
 			.on("receipt", async function (receipt) {
-				console.log(receipt);
 				await createLilypadJob({
 					job_id: receipt.events.JobCreated.returnValues.jobId,
 					tx_hash: receipt.transactionHash,
 				});
-
 				setLoading(false);
+				gJ();
 				alert("Succesfully created a job🥳🍾");
 			});
 		setLoading(false);
@@ -110,18 +132,21 @@ export const Lilypad = () => {
 	async function sM() {
 		const name = prompt("Enter module name");
 		if (!name || name === "") return;
+		setModuleLoading(true);
 		let payload = new Payload({ spec: data });
 		payload = payload.toJson;
 		await createTemplate({
 			payload,
 			name,
 		});
-		gM();
+		await gM();
+		setModuleLoading(false);
 	}
 
 	useEffect(() => {
 		gM();
 		gJ();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
@@ -399,7 +424,7 @@ export const Lilypad = () => {
 									<BlueButton
 										title={"Save Module"}
 										onClick={sM}
-										loading={loading}
+										loading={moduleLoading}
 									/>
 								</Box>
 								<Box width={"100%"} ml={1}>
@@ -422,16 +447,18 @@ export const Lilypad = () => {
 									return (
 										<ListItem
 											secondaryAction={
-												<IconButton
-													edge="end"
-													aria-label="delete"
-													onClick={async () => {
-														await deleteTemplate(m._id);
-														gM();
-													}}
-												>
-													<AiFillDelete />
-												</IconButton>
+												m._id !== 0 && (
+													<IconButton
+														edge="end"
+														aria-label="delete"
+														onClick={async () => {
+															await deleteTemplate(m._id);
+															gM();
+														}}
+													>
+														<AiFillDelete />
+													</IconButton>
+												)
 											}
 											key={i}
 										>
@@ -468,7 +495,7 @@ export const Lilypad = () => {
 					<Box sx={{ p: 2 }}>
 						<h2>Jobs 📃</h2>
 						<br />
-						{loading ? (
+						{jobLoading ? (
 							<Box>
 								{Array.from({ length: 10 }).map((_, i) => (
 									<Skeleton

@@ -1,7 +1,7 @@
 import "../styles/JobComponent.css";
 import React, { useEffect, useState } from "react";
 import { IoRefreshOutline } from "react-icons/io5";
-import { PrimaryGrey } from "../constants";
+import { CHAIN, PrimaryGrey } from "../constants";
 import { Box } from "@mui/material";
 import { toast } from "react-toastify";
 import { getLilypadJob } from "../api/lilypad";
@@ -83,13 +83,9 @@ export const LilyJobComponent = ({ job: jb }) => {
 			</td>
 			<td
 				onClick={() => {
-					if (!job.result) return;
-					window.open(
-						`https://mumbai.polygonscan.com/tx/${job.tx_hash}`,
-						"_blank"
-					);
+					window.open(`${CHAIN.blockExplorerUrls[0]}/tx/${job.tx_hash}`, "_blank");
 				}}
-				style={{ cursor: !job.result ? "default" : "pointer" }}
+				style={{ cursor: "pointer" }}
 			>
 				View Transaction
 			</td>
