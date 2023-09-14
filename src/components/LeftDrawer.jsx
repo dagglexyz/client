@@ -113,9 +113,17 @@ export function LeftDrawer({ smaller }) {
 	// let credits = localStorage.getItem("credits");
 
 	async function gU() {
-		const user = await getUser();
-		// setUser(user);
-		localStorage.setItem("credits", user && user.credits ? user.credits : 0);
+		try {
+			const user = await getUser();
+			if (!user) {
+				navigate("/");
+				localStorage.clear();
+			}
+			// setUser(user);
+			localStorage.setItem("credits", user && user.credits ? user.credits : 0);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	const handleCreditClose = () => {
