@@ -79,11 +79,18 @@ export const LilyJobComponent = ({ job: jb }) => {
 				}}
 				style={{ cursor: !job.result ? "default" : "pointer" }}
 			>
-				{job.result ? "Check Result" : "-"}
+				{job.result
+					? job.result.includes(" ")
+						? job.result
+						: "Check Result"
+					: "-"}
 			</td>
 			<td
 				onClick={() => {
-					window.open(`${CHAIN.blockExplorerUrls[0]}/tx/${job.tx_hash}`, "_blank");
+					window.open(
+						`${CHAIN.blockExplorerUrls[0]}/tx/${job.tx_hash}`,
+						"_blank"
+					);
 				}}
 				style={{ cursor: "pointer" }}
 			>

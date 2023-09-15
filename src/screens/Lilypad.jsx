@@ -123,6 +123,7 @@ export const Lilypad = () => {
 				await createLilypadJob({
 					job_id: receipt.events.JobCreated.returnValues.jobId,
 					tx_hash: receipt.transactionHash,
+					block_number: receipt.blockNumber,
 				});
 				setLoading(false);
 				gJ();
