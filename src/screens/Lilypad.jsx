@@ -97,7 +97,9 @@ export const Lilypad = () => {
 		await switchChain();
 		setLoading(true);
 		const FEE = Web3.utils.toWei("0.04");
-		let spec = JSON.stringify(data.toJson);
+		let cD = {...template}
+		cD.outputs = [new StorageSpec({ name: "outputs", path: "/outputs" })]
+		let spec = JSON.stringify(cD);
 
 		const web3 = new Web3(window.ethereum);
 		const contract = new web3.eth.Contract(
@@ -287,11 +289,8 @@ export const Lilypad = () => {
 												value={inp.StorageSource === "IPFS" ? inp.cid : inp.url}
 												onInput={(e) => {
 													setTemplate((prevState) => {
-														if (prevState.inputs[iI].StorageSource === "IPFS") {
-															prevState.inputs[iI].cid = e.target.value;
-														} else {
-															prevState.inputs[iI].url = e.target.value;
-														}
+														prevState.inputs[iI].cid = e.target.value;
+														prevState.inputs[iI].url = e.target.value;
 														return {
 															...prevState,
 														};

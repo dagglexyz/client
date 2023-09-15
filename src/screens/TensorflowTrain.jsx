@@ -18,6 +18,17 @@ import { Info } from "../components/Info";
 import { useNavigate } from "react-router-dom";
 import { createTensorJob, uploadScript } from "../api/bacalhau";
 import { toast } from "react-toastify";
+import { getWalletAddress, switchChain } from "../utils/wallet";
+import LilypadInterface from "../contracts/Lilypad.json";
+import Web3 from "web3";
+import {
+	JobSpecDocker,
+	PublisherSpec,
+	Spec,
+	StorageSpec,
+} from "@daggle/bacalhau-js/models";
+import { CHAIN } from "../constants";
+import { createLilypadJob } from "../api/lilypad";
 
 export const TensorflowTrain = () => {
 	const [loading, setLoading] = useState(false);
@@ -31,7 +42,7 @@ export const TensorflowTrain = () => {
 		setLoading(true);
 		const fileUplaodResolved = await uploadScript(code);
 		if (fileUplaodResolved.statusCode !== 200)
-			toast("Script upload failed", { type: "error" });
+			return toast("Script upload failed", { type: "error" });
 
 		const bacalhauResolved = await createTensorJob(
 			fileUplaodResolved.data.protocolLink,
@@ -44,11 +55,76 @@ export const TensorflowTrain = () => {
 		setLoading(false);
 	}
 
+	async function createLilyJob() {
+		setLoading(true);
+		// Script Upload
+		const fileUplaodResolved = await uploadScript(code);
+		if (fileUplaodResolved.statusCode !== 200)
+			return toast("Script upload failed", { type: "error" });
+
+		// Prepare Spec
+		let scriptUrl = `${fileUplaodResolved.data.protocolLink}/${fileUplaodResolved.data.filename}`;
+
+		const data = new Spec({
+			docker: new JobSpecDocker({
+				entrypoint: ["python", fileUplaodResolved.data.filename],
+				image: "tensorflow/tensorflow",
+				WorkingDirectory: "/inputs",
+			}),
+			publisher_spec: new PublisherSpec({ type: "Estuary" }),
+			timeout: 1800,
+			verifier: "Noop",
+			inputs: [fileUrl, scriptUrl].map(
+				(url) =>
+					new StorageSpec({
+						StorageSource: "URLDownload",
+						cid: url,
+						url,
+						path: "/inputs",
+					})
+			),
+			outputs: [new StorageSpec({ name: "outputs", path: "/outputs" })],
+		});
+		// Chain configs
+		await switchChain();
+		const FEE = Web3.utils.toWei("0.04");
+		let spec = JSON.stringify(data.toJson);
+
+		const web3 = new Web3(window.ethereum);
+		const contract = new web3.eth.Contract(
+			LilypadInterface.abi,
+			CHAIN.contract_address
+		);
+
+		const currentAddress = await getWalletAddress();
+
+		// Gas Calculation
+		const gasPrice = await web3.eth.getGasPrice();
+		const gas = await contract.methods.runJob(spec).estimateGas({
+			from: currentAddress,
+			value: FEE,
+		});
+		await contract.methods
+			.runJob(spec)
+			.send({ from: currentAddress, gasPrice, gas, value: FEE })
+			.on("receipt", async function (receipt) {
+				await createLilypadJob({
+					job_id: receipt.events.JobCreated.returnValues.jobId,
+					tx_hash: receipt.transactionHash,
+				});
+				setLoading(false);
+				alert("Succesfully created a job🥳🍾");
+			});
+		setLoading(false);
+	}
+
 	async function gd() {
 		const resolved = await getDatasets();
 		if (resolved.statusCode === 200) {
 			setDatasetOptions(resolved.data);
-			if (resolved.data.length > 0) setFileUrl(resolved.data[0].file + "/");
+			if (resolved.data.length > 0) {
+				setFileUrl(`${resolved.data[0].file}/${resolved.data[0].name}`);
+			}
 		}
 	}
 
@@ -143,7 +219,7 @@ export const TensorflowTrain = () => {
 								<BlueButton
 									title={"Train Model"}
 									loading={loading}
-									onClick={train}
+									onClick={createLilyJob}
 								/>
 							</Box>
 						</Box>

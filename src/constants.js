@@ -10,7 +10,7 @@ export const ChainsConfig = {
 		nativeCurrency: { name: "Filecoin", symbol: "tFIL", decimals: 18 },
 		rpcUrls: ["https://filecoin-calibration.chainstacklabs.com/rpc/v1"],
 		blockExplorerUrls: ["https://calibration.filscan.io/"],
-		contract_address: "0xC8f52445fbe5c341dc36E66153Ff1Ec528e6A7D4",
+		contract_address: "0x553e7E91eC3A20b446F278c07b69B35Dbfb72475",
 	},
 	FVM_MAINNET: {
 		chainId: 314,
@@ -30,6 +30,7 @@ export const ChainsConfig = {
 			decimals: 18,
 		},
 		blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+		contract_address: "0xFC9206c15Be795cde60ae5E419b26ecad4EBaf5e",
 	},
 };
 
