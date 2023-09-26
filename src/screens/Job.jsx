@@ -53,6 +53,7 @@ export const Job = () => {
 										<th>Type</th>
 										<th>Status</th>
 										<th>Result</th>
+										<th>Download</th>
 										<th>Created</th>
 									</tr>
 								</thead>

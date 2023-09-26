@@ -2,10 +2,11 @@ import "../styles/JobComponent.css";
 import React, { useEffect, useState } from "react";
 import { MdContentCopy } from "react-icons/md";
 import { IoRefreshOutline } from "react-icons/io5";
-import { PrimaryGrey } from "../constants";
+import { PrimaryGrey, SERVER_URL_X } from "../constants";
 import { Box, Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
 import { getJob } from "../api/bacalhau";
+import { downloadJobResult } from "../api/saturn";
 
 export const JobComponent = ({ job: jb }) => {
 	const [copyEnabled, setCopyEnabled] = useState(false);
@@ -22,7 +23,7 @@ export const JobComponent = ({ job: jb }) => {
 		setRefreshing(true);
 		const jobResolved = await getJob(job._id);
 		if (jobResolved.statusCode === 200) {
-			console.log(job)
+			console.log(job);
 			setJob(jobResolved.data);
 			toast("Successfully refreshed.", { type: "success" });
 		} else {
@@ -99,6 +100,21 @@ export const JobComponent = ({ job: jb }) => {
 				style={{ cursor: "pointer" }}
 			>
 				{job.status === "Completed" ? "Check Result" : "-"}
+			</td>
+			<td
+				onClick={() => downloadJobResult(job.result)}
+				style={{ cursor: "pointer" }}
+			>
+				{job.status === "Completed" ? (
+					<a
+						style={{ textDecoration: "none", color: "#828488" }}
+						href={SERVER_URL_X + "/saturn/" + job.result}
+					>
+						Download Result
+					</a>
+				) : (
+					"-"
+				)}
 			</td>
 			{/* <td>09/04/2023 20:29</td> */}
 			<td>{new Date(job.createdAt).toDateString()}</td>
