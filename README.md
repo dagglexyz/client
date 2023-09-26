@@ -15,7 +15,7 @@ A simple ReactJS app with react-router-dom used to build https://bet.daggle.xyz.
 <video width="320" height="240" controls>
   <source src="https://github.com/dagglexyz/.github/assets/53221136/f6693936-e68b-4754-83c2-2a5398d8a4ff" type="video/mp4">
 </video>
-<div>
+</div>
 
 [check out the full video here.](https://github.com/dagglexyz/.github/assets/53221136/f6693936-e68b-4754-83c2-2a5398d8a4ff)
 
@@ -25,7 +25,7 @@ A simple ReactJS app with react-router-dom used to build https://bet.daggle.xyz.
 <video width="320" height="240" controls>
   <source src="https://github.com/dagglexyz/.github/assets/53221136/f6693936-e68b-4754-83c2-2a5398d8a4ff" type="video/mp4">
 </video>
-<div>
+</div>
 
 [check out the full video here.](https://github.com/dagglexyz/.github/assets/53221136/f6693936-e68b-4754-83c2-2a5398d8a4ff)
 
