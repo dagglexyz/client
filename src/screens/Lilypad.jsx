@@ -97,8 +97,8 @@ export const Lilypad = () => {
 		await switchChain();
 		setLoading(true);
 		const FEE = Web3.utils.toWei("0.04");
-		let cD = {...template}
-		cD.outputs = [new StorageSpec({ name: "outputs", path: "/outputs" })]
+		let cD = { ...template };
+		cD.outputs = [new StorageSpec({ name: "outputs", path: "/outputs" })];
 		let spec = JSON.stringify(cD);
 
 		const web3 = new Web3(window.ethereum);
@@ -178,14 +178,17 @@ export const Lilypad = () => {
 						<Box sx={{ p: 2, flex: 1 }} mr={2}>
 							<h2 style={{ textAlign: "center" }}>Lilypad Jobs 🍃</h2>
 							<br />
-							<Box display={"flex"}>
+							<Box display={"flex"} sx={{ width: "100%" }}>
 								{/* Image */}
-								<Box maxWidth="50vw" mr={2}>
+								<Box maxWidth="50vw" mr={2} flex={1}>
 									<Box mb={1}>
 										<h5>Image*</h5>
 									</Box>
 									<Box maxWidth="20vw" display={"flex"}>
-										<Box className="param search-container">
+										<Box
+											className="param search-container"
+											sx={{ width: "100%" }}
+										>
 											<input
 												type="url"
 												id="search"
@@ -207,12 +210,15 @@ export const Lilypad = () => {
 									</Box>
 								</Box>
 								{/* Working Directory */}
-								<Box maxWidth="50vw" mb={2}>
+								<Box maxWidth="50vw" mb={2} flex={1}>
 									<Box mb={1}>
 										<h5>Working Directory</h5>
 									</Box>
 									<Box maxWidth="20vw" display={"flex"}>
-										<Box className="param search-container">
+										<Box
+											className="param search-container"
+											sx={{ width: "100%" }}
+										>
 											<input
 												type="url"
 												id="workingdir"
@@ -237,7 +243,7 @@ export const Lilypad = () => {
 								</Box>
 							</Box>
 							{/* Inputs */}
-							<Box maxWidth="50vw" mr={2} mb={3}>
+							<Box maxWidth="50vw" mb={3}>
 								<Box mb={1} display={"flex"}>
 									<Box mr={1}>
 										<h5>Inputs</h5>
@@ -257,7 +263,6 @@ export const Lilypad = () => {
 								</Box>
 								{template.inputs.map((inp, iI) => (
 									<Box
-										maxWidth="30vw"
 										sx={{
 											display: "flex",
 											alignItems: "center",
@@ -283,7 +288,7 @@ export const Lilypad = () => {
 												<option value="URLDownload">URL</option>
 											</select>
 										</Box>
-										<Box className="param search-container" mr={2}>
+										<Box className="param search-container" mr={2} flex={1}>
 											<input
 												type="url"
 												placeholder="URL/CID"
@@ -299,7 +304,7 @@ export const Lilypad = () => {
 												}}
 											/>
 										</Box>
-										<Box className="param search-container" mr={2}>
+										<Box className="param search-container" mr={2} flex={1}>
 											<input
 												type="text"
 												placeholder="Save to directory"
@@ -354,7 +359,6 @@ export const Lilypad = () => {
 								</Box>
 								{template.docker.entrypoint.map((d, i) => (
 									<Box
-										maxWidth="30vw"
 										sx={{
 											display: "flex",
 											alignItems: "center",
@@ -362,7 +366,11 @@ export const Lilypad = () => {
 										key={i}
 										mb={1}
 									>
-										<Box className="param search-container" mr={2}>
+										<Box
+											className="param search-container"
+											mr={2}
+											sx={{ width: "100%" }}
+										>
 											<input
 												type="text"
 												id={`entrypoint-${i}`}
