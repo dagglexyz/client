@@ -4,9 +4,11 @@ import { LeftDrawer } from "../components/LeftDrawer";
 import { Navbar } from "../components/Navbar";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { PrimaryGrey } from "../constants";
-import { getTemplates } from "../api/template";
+import { cloneTemplate, getTemplates } from "../api/template";
+import { toast } from "react-toastify";
+import FloppyDisk from "../assets/fileupload.png";
 
-export const LilypadExplore = () => {
+export const Modules = () => {
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
 
@@ -17,6 +19,21 @@ export const LilypadExplore = () => {
 		setData(res);
 		setLoading(false);
 	};
+
+	async function clone(id) {
+		const name = prompt("Enter module name");
+		if (!name || name === "") return;
+		const res = await cloneTemplate({
+			name,
+			id,
+		});
+		if (res) {
+			toast("Clone created", { type: "success" });
+		} else {
+			toast("Clone failed", { type: "error" });
+		}
+		gM();
+	}
 
 	useEffect(() => {
 		gM();
@@ -47,17 +64,16 @@ export const LilypadExplore = () => {
 							/>
 						</Box>
 					) : (
-						<Box sx={{ pl: 1, flex: 1, ml: 2 }}>
+						<Box sx={{ flex: 1 }}>
 							{data?.length > 0 &&
-								data.map((value) => (
+								data.map((t) => (
 									<Box
-										key={value._id}
+										key={t._id}
 										sx={{
-											bgcolor: "rgb(43, 49, 57)",
+											bgcolor: "rgb(221 221 221)",
 											width: "100%",
 											minHeight: "120px",
 											borderRadius: "5px",
-											color: "white",
 											fontSize: "14px",
 											fontWeight: 500,
 											display: "flex",
@@ -75,12 +91,10 @@ export const LilypadExplore = () => {
 											}}
 										>
 											<Avatar
-												src={
-													value.img ? value.img : "/images/defaultModule.png"
-												}
+												src={t.img ? t.img : FloppyDisk}
 												style={{
-													backgroundColor: !value.img ? "white" : "",
-													borderRadius: !value.img ? "5pc" : "",
+													backgroundColor: !t.img ? "white" : "",
+													borderRadius: !t.img ? "5pc" : "",
 													height: "55px",
 													width: "55px",
 												}}
@@ -89,34 +103,32 @@ export const LilypadExplore = () => {
 										{/* details box */}
 										<Box>
 											<Box sx={{ mt: 2, fontWeight: 600, cursor: "pointer" }}>
-												{value.name}
+												{t.name}
 											</Box>
 											<Box
 												sx={{
 													mt: 0.5,
 													fontWeight: 500,
-													color: "#9f9f9f",
 													cursor: "pointer",
 												}}
 											>
-												{value.user.displayName}/{value.name}
+												{t.user.displayName}/{t.name}
 											</Box>
 											<Box
 												sx={{
 													mt: 0.5,
-													mb: value.description ? 2 : 1,
+													mb: t.description ? 2 : 1,
 												}}
 											>
-												{value.description}
+												{t.description}
 											</Box>
 											<Box
 												sx={{
 													fontWeight: 400,
 													fontSize: "12px",
-													color: "#9f9f9f",
 												}}
 											>
-												Updated {value.updatedAt}
+												Updated {t.updatedAt}
 											</Box>
 
 											<Box
@@ -140,7 +152,7 @@ export const LilypadExplore = () => {
 													},
 													cursor: "pointer",
 												}}
-												onClick={() => {}}
+												onClick={() => clone(t._id)}
 											>
 												<Box mr={0.5}>
 													<p>clone</p>
