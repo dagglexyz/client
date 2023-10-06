@@ -4,17 +4,18 @@ import { LeftDrawer } from "../components/LeftDrawer";
 import { Navbar } from "../components/Navbar";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { PrimaryGrey } from "../constants";
-import { cloneTemplate, getTemplates } from "../api/template";
+import { cloneTemplate, searchTemplates } from "../api/template";
 import { toast } from "react-toastify";
 import FloppyDisk from "../assets/fileupload.png";
+import { SearchComponent } from "../components/search/SearchComponent";
 
 export const Modules = () => {
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
 
-	const gM = async () => {
-		const res = await getTemplates();
-		console.log(res);
+	const gM = async (name) => {
+		setLoading(true);
+		const res = await searchTemplates(name);
 
 		setData(res);
 		setLoading(false);
@@ -36,7 +37,7 @@ export const Modules = () => {
 	}
 
 	useEffect(() => {
-		gM();
+		gM("");
 	}, []);
 
 	return (
@@ -47,6 +48,9 @@ export const Modules = () => {
 				<Box sx={{ p: 2 }}>
 					<h2>Modules💾</h2>
 					<br />
+					<Box maxWidth={"min-content"} mb={2}>
+						<SearchComponent onChange={(e) => gM(e.target.value)} />
+					</Box>
 					{loading ? (
 						<Box sx={{ pl: 1, flex: 1 }}>
 							<Skeleton

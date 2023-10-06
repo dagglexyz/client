@@ -51,6 +51,25 @@ export const getTemplates = async function () {
 	}
 };
 
+export const searchTemplates = async function (name) {
+	try {
+		let token = localStorage.getItem("token");
+		const response = await axios.get(
+			SERVER_URL_X + `/template/search?name=${name}`,
+			{
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			}
+		);
+		if (response.status === 200) {
+			return response.data;
+		}
+	} catch (error) {
+		console.log("user", error.message);
+	}
+};
+
 export const deleteTemplate = async function (id) {
 	try {
 		let token = localStorage.getItem("token");
