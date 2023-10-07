@@ -33,7 +33,7 @@ export const Modules = () => {
 		} else {
 			toast("Clone failed", { type: "error" });
 		}
-		gM();
+		gM("");
 	}
 
 	useEffect(() => {
