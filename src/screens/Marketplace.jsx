@@ -11,9 +11,11 @@ import Dataset from "../assets/dataset.png";
 import DockerLogo from "../assets/docker-logo.png";
 import RemoveBG from "../assets/removebg.png";
 import Lilypad from "../assets/lilypad.png";
+import Modules from "../assets/modules.png";
 import { useNavigate } from "react-router-dom";
 
 const actions = [
+	{ title: "Modules Explorer", image: Modules, path: "/modules" },
 	{ title: "Lilypad Dashboard", image: Lilypad, path: "/lilypad" },
 	{ title: "Deploy Docker", image: DockerLogo, path: "/docker" },
 	{ title: "Upload File", image: FileUpload, path: "/fileupload" },

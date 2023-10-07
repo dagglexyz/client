@@ -6,7 +6,7 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import { PrimaryGrey } from "../constants";
 import { cloneTemplate, searchTemplates } from "../api/template";
 import { toast } from "react-toastify";
-import FloppyDisk from "../assets/fileupload.png";
+import ModulesImage from "../assets/modules.png";
 import { SearchComponent } from "../components/search/SearchComponent";
 
 export const Modules = () => {
@@ -95,7 +95,7 @@ export const Modules = () => {
 											}}
 										>
 											<Avatar
-												src={t.img ? t.img : FloppyDisk}
+												src={t.img ? t.img : ModulesImage}
 												style={{
 													backgroundColor: !t.img ? "white" : "",
 													borderRadius: !t.img ? "5pc" : "",
