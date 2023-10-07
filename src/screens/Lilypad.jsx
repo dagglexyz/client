@@ -477,7 +477,7 @@ export const Lilypad = () => {
 													});
 												}}
 											>
-												<Avatar>
+												<Avatar style={{ cursor: "pointer" }}>
 													<AiFillFolder />
 												</Avatar>
 											</ListItemAvatar>
@@ -487,7 +487,15 @@ export const Lilypad = () => {
 														return { ...m.payload.Spec };
 													});
 												}}
-												primary={m.name}
+												primary={
+													<p
+														style={{
+															cursor: "pointer",
+														}}
+													>
+														{m.name}
+													</p>
+												}
 												secondary={`${new Date(
 													m.createdAt
 												).toLocaleDateString()} ${new Date(
