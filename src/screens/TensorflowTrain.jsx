@@ -71,7 +71,7 @@ export const TensorflowTrain = () => {
 				image: "tensorflow/tensorflow",
 				WorkingDirectory: "/inputs",
 			}),
-			publisher_spec: new PublisherSpec({ type: "Estuary" }),
+			publisher_spec: new PublisherSpec({ type: "IPFS" }),
 			timeout: 1800,
 			verifier: "Noop",
 			inputs: [fileUrl, scriptUrl].map(

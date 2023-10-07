@@ -85,7 +85,7 @@ export const Lilypad = () => {
 			image: template.docker.image,
 			WorkingDirectory: template.docker.WorkingDirectory,
 		}),
-		publisher_spec: new PublisherSpec({ type: "Estuary" }),
+		publisher_spec: new PublisherSpec({ type: "IPFS" }),
 		timeout: 1800,
 		verifier: "Noop",
 		inputs: template.inputs
