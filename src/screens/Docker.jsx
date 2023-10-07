@@ -30,7 +30,7 @@ export const Docker = () => {
 				WorkingDirectory: workingdir,
 				entrypoint: entrypoints.current,
 			},
-			inputs.current
+			inputs.current.filter((t) => t.cid || t.url)
 		);
 		setLoading(false);
 	}
