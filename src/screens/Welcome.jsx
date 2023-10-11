@@ -2,6 +2,7 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import LoginImage from "../assets/loginpage.png";
 import BacalhauLogo from "../assets/bacalhaulogo.png";
+import MagicLogo from "../assets/magiclogo.png";
 import { useNavigate } from "react-router-dom";
 import { connectWalletToSite, getWalletAddress } from "../utils/wallet";
 import { createUser, magicLogin } from "../api/user";
@@ -152,20 +153,49 @@ export const Welcome = () => {
 					{/* Magic Component */}
 					<Box mb={2}>
 						<BlueButton
+							title={"Connect your wallet"}
+							onClick={connectSite}
+							style={{
+								backgroundColor: "transparent",
+								color: "black",
+								border: "1px solid grey",
+							}}
+						/>
+					</Box>
+					<Box mb={1}>
+						<BlueButton
 							onClick={mL}
 							title={"Signin using email"}
 							loading={magicLoading}
+							style={{
+								background: "linear-gradient(45deg, #0049ff, #33ccff)",
+								color: "white",
+							}}
 						/>
 					</Box>
-					<BlueButton
-						title={"Connect your wallet"}
-						onClick={connectSite}
-						style={{
-							backgroundColor: "transparent",
-							color: "black",
-							border: "1px solid grey",
-						}}
-					/>
+					<Box display={"flex"} alignItems={"center"} justifyContent={"center"}>
+						<Box
+							mr={0.5}
+							sx={{ cursor: "pointer" }}
+							onClick={() => window.open("https://magic.link/", "_blank")}
+						>
+							<h6 style={{ color: PrimaryGrey }}>Powered by </h6>
+						</Box>
+						<img
+							style={{ cursor: "pointer" }}
+							src={MagicLogo}
+							alt="magic logo"
+							height={"20px"}
+							onClick={() => window.open("https://magic.link/", "_blank")}
+						/>
+						<Box
+							ml={0.5}
+							sx={{ cursor: "pointer" }}
+							onClick={() => window.open("https://magic.link/", "_blank")}
+						>
+							<h6 style={{ color: PrimaryGrey }}>Magic</h6>
+						</Box>
+					</Box>
 					{/* Email Component */}
 					{/* <Box>
 						<TextField

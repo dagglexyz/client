@@ -1,6 +1,6 @@
 import "../styles/navbar.css";
 import React, { useEffect, useState } from "react";
-import { Box, Menu, MenuItem } from "@mui/material";
+import { Box, CircularProgress, Menu, MenuItem } from "@mui/material";
 import { HiOutlineBell, HiOutlineLogout } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { SearchComponent } from "./search/SearchComponent";
@@ -25,6 +25,7 @@ export const Navbar = ({ disableSearch = false }) => {
 	const [ensName, setEnsName] = useState("");
 	const [ensAvatar, setEnsAvatar] = useState("");
 	const [input, setInput] = useState("");
+	const [logoutLoading, setLogoutLoading] = useState(false);
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -210,8 +211,10 @@ export const Navbar = ({ disableSearch = false }) => {
 								<MenuItem
 									onClick={async () => {
 										try {
+											setLogoutLoading(true);
 											await magic.user.logout();
 											localStorage.clear();
+											setLogoutLoading(false);
 											window.location.replace("/");
 											setAnchorEl(null);
 										} catch (error) {
@@ -219,20 +222,26 @@ export const Navbar = ({ disableSearch = false }) => {
 										}
 									}}
 								>
-									<HiOutlineLogout
-										color="#828488"
-										size={20}
-										onClick={async () => {
-											try {
-												await magic.user.logout();
-												localStorage.clear();
-												window.location.replace("/");
-												setAnchorEl(null);
-											} catch (error) {
-												console.log(error.message);
-											}
-										}}
-									/>
+									{logoutLoading ? (
+										<CircularProgress size={14} sx={{ color: "grey" }} />
+									) : (
+										<HiOutlineLogout
+											color="#828488"
+											size={20}
+											onClick={async () => {
+												try {
+													setLogoutLoading(true);
+													await magic.user.logout();
+													localStorage.clear();
+													setLogoutLoading(false);
+													window.location.replace("/");
+													setAnchorEl(null);
+												} catch (error) {
+													console.log(error.message);
+												}
+											}}
+										/>
+									)}
 									&nbsp;
 									<p
 										style={{
