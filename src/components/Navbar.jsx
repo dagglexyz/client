@@ -4,13 +4,17 @@ import { Box, Menu, MenuItem } from "@mui/material";
 import { HiOutlineBell, HiOutlineLogout } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { SearchComponent } from "./search/SearchComponent";
-import { MdOutlinePersonOutline } from "react-icons/md";
 import NoProfilePicture from "../assets/default-profile-icon.png";
 import { getShortAddress } from "../utils/addressShort";
 import { EmbedSDK } from "@pushprotocol/uiembed";
 
 import { ethers } from "ethers";
 import { PrimaryGrey } from "../constants";
+import { Magic } from "magic-sdk";
+
+const magic = new Magic(process.env.REACT_APP_MAGIC_KEY, {
+	network: "goerli",
+});
 
 export const Navbar = ({ disableSearch = false }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -102,7 +106,7 @@ export const Navbar = ({ disableSearch = false }) => {
 						<Box mr={2}>
 							<SearchComponent
 								onSearch={() => {
-									console.log(input)
+									console.log(input);
 									if (input !== "") {
 										navigate(`/jobs?query=${input}`);
 									}
@@ -187,7 +191,7 @@ export const Navbar = ({ disableSearch = false }) => {
 									horizontal: "right",
 								}}
 							>
-								<MenuItem
+								{/* <MenuItem
 									onClick={() => {
 										const address = localStorage.getItem("address");
 										navigate("/profile/" + address);
@@ -202,21 +206,31 @@ export const Navbar = ({ disableSearch = false }) => {
 									>
 										Change Profile
 									</p>
-								</MenuItem>
+								</MenuItem> */}
 								<MenuItem
-									onClick={() => {
-										localStorage.clear();
-										window.location.replace("/");
-										setAnchorEl(null);
+									onClick={async () => {
+										try {
+											await magic.user.logout();
+											localStorage.clear();
+											window.location.replace("/");
+											setAnchorEl(null);
+										} catch (error) {
+											console.log(error.message);
+										}
 									}}
 								>
 									<HiOutlineLogout
 										color="#828488"
 										size={20}
-										onClick={() => {
-											localStorage.clear();
-											window.location.replace("/");
-											setAnchorEl(null);
+										onClick={async () => {
+											try {
+												await magic.user.logout();
+												localStorage.clear();
+												window.location.replace("/");
+												setAnchorEl(null);
+											} catch (error) {
+												console.log(error.message);
+											}
 										}}
 									/>
 									&nbsp;
