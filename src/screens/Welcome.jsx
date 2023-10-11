@@ -1,20 +1,26 @@
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import LoginImage from "../assets/loginpage.png";
 import BacalhauLogo from "../assets/bacalhaulogo.png";
 import { useNavigate } from "react-router-dom";
 import { connectWalletToSite, getWalletAddress } from "../utils/wallet";
-import { createUser, loginUser, signUpUser } from "../api/user";
+import { createUser, magicLogin } from "../api/user";
 import { BlueButton } from "../components/BlueButton";
 import { PrimaryGrey } from "../constants";
 import { toast } from "react-toastify";
+import { Magic } from "magic-sdk";
+
+const magic = new Magic(process.env.REACT_APP_MAGIC_KEY, {
+	network: "goerli",
+});
 
 export const Welcome = () => {
 	const navigate = useNavigate();
-	const [isLogin, setIsLogin] = useState(true);
-	const [loading, setLoading] = useState(false);
-	const [username, setUsername] = useState();
-	const [password, setPassword] = useState();
+	// const [isLogin, setIsLogin] = useState(true);
+	// const [loading, setLoading] = useState(false);
+	// const [username, setUsername] = useState();
+	// const [password, setPassword] = useState();
+	const [magicLoading, setMagicLoading] = useState(false);
 
 	async function connectSite() {
 		let token = localStorage.getItem("token");
@@ -35,48 +41,66 @@ export const Welcome = () => {
 		}
 	}
 
-	async function signup() {
-		if (!validate()) return;
-		setLoading(true);
-		await signUpUser(username, password);
-		let token = localStorage.getItem("token");
-		if (token && token !== "" && token !== "undefined") {
-			navigate("/home");
-		}
-		setLoading(false);
-	}
+	// async function signup() {
+	// 	if (!validate()) return;
+	// 	setLoading(true);
+	// 	await signUpUser(username, password);
+	// 	let token = localStorage.getItem("token");
+	// 	if (token && token !== "" && token !== "undefined") {
+	// 		navigate("/home");
+	// 	}
+	// 	setLoading(false);
+	// }
 
-	async function login() {
-		if (!validate()) return;
-		setLoading(true);
-		await loginUser(username, password);
-		let token = localStorage.getItem("token");
-		if (token && token !== "" && token !== "undefined") {
-			navigate("/home");
-		}
-		setLoading(false);
-	}
+	// async function login() {
+	// 	if (!validate()) return;
+	// 	setLoading(true);
+	// 	await loginUser(username, password);
+	// 	let token = localStorage.getItem("token");
+	// 	if (token && token !== "" && token !== "undefined") {
+	// 		navigate("/home");
+	// 	}
+	// 	setLoading(false);
+	// }
 
-	function validate() {
-		if (!password || !username) {
-			toast("Please fill all the fields.", {
+	// function validate() {
+	// 	if (!password || !username) {
+	// 		toast("Please fill all the fields.", {
+	// 			type: "warning",
+	// 		});
+	// 		return false;
+	// 	}
+	// 	if (password.length < 6) {
+	// 		toast("Password should be greater than 6 characters", {
+	// 			type: "warning",
+	// 		});
+	// 		return false;
+	// 	}
+	// 	if (username.length < 6) {
+	// 		toast("Username should be greater than 6 characters", {
+	// 			type: "warning",
+	// 		});
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
+
+	async function mL() {
+		try {
+			setMagicLoading(true);
+			const accounts = await magic.wallet.connectWithUI();
+			await magicLogin(accounts[0]);
+			setMagicLoading(false);
+			let token = localStorage.getItem("token");
+			if (token && token !== "" && token !== "undefined") {
+				localStorage.setItem("address", accounts[0]);
+				navigate("/home");
+			}
+		} catch (error) {
+			toast(error.message, {
 				type: "warning",
 			});
-			return false;
 		}
-		if (password.length < 6) {
-			toast("Password should be greater than 6 characters", {
-				type: "warning",
-			});
-			return false;
-		}
-		if (username.length < 6) {
-			toast("Username should be greater than 6 characters", {
-				type: "warning",
-			});
-			return false;
-		}
-		return true;
 	}
 
 	useEffect(() => {
@@ -85,7 +109,12 @@ export const Welcome = () => {
 	}, []);
 
 	return (
-		<Box display={"flex"} height="100vh">
+		<Box
+			display={"flex"}
+			height="100vh"
+			position={"relative"}
+			zIndex={magicLoading ? -1 : 1}
+		>
 			<Box
 				sx={{
 					display: "flex",
@@ -120,15 +149,25 @@ export const Welcome = () => {
 					</p>
 					<br />
 					<br />
-					<BlueButton title={"Connect your wallet"} onClick={connectSite} />
-					<Box
-						sx={{
-							mt: 2,
-						}}
-					>
-						(or)
+					{/* Magic Component */}
+					<Box mb={2}>
+						<BlueButton
+							onClick={mL}
+							title={"Signin using email"}
+							loading={magicLoading}
+						/>
 					</Box>
-					<Box>
+					<BlueButton
+						title={"Connect your wallet"}
+						onClick={connectSite}
+						style={{
+							backgroundColor: "transparent",
+							color: "black",
+							border: "1px solid grey",
+						}}
+					/>
+					{/* Email Component */}
+					{/* <Box>
 						<TextField
 							placeholder="Enter username"
 							size="small"
@@ -176,7 +215,7 @@ export const Welcome = () => {
 							onClick={isLogin ? login : signup}
 							loading={loading}
 						/>
-					</Box>
+					</Box> */}
 				</Box>
 			</Box>
 			<Box

@@ -1,7 +1,7 @@
 import { Box, CircularProgress } from "@mui/material";
 import React from "react";
 
-export const BlueButton = ({ onClick, title, loading }) => {
+export const BlueButton = ({ onClick, title, loading, style }) => {
 	return (
 		<Box
 			onClick={onClick}
@@ -15,6 +15,7 @@ export const BlueButton = ({ onClick, title, loading }) => {
 				cursor: "pointer",
 				minWidth: "100px",
 				textAlign: "center",
+				...style,
 			}}
 		>
 			{loading ? <CircularProgress size={14} sx={{ color: "white" }} /> : title}

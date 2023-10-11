@@ -157,3 +157,38 @@ export const addCredits = async function () {
 		console.log(error.message);
 	}
 };
+
+export const magicLogin = async function (address) {
+	try {
+		const nonceResponse = await axios.post(
+			`${SERVER_URL_X}/user/generateNonce`,
+			{ address },
+			{
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+			}
+		);
+		const formattedNonceResponse = nonceResponse.data;
+		const nonce = formattedNonceResponse.nonce;
+
+		const response = await axios.post(
+			`${SERVER_URL_X}/user/magicLogin`,
+			{ displayName: "Unnamed", nonce, address },
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": `application/json`,
+				},
+			}
+		);
+		if (response.status === 201) {
+			localStorage.setItem("token", response.data.token);
+
+			return response.data;
+		}
+	} catch (error) {
+		toast(error.message, {
+			type: "warning",
+		});
+	}
+};
